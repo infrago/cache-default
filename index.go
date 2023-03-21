@@ -2,6 +2,7 @@ package default_cache
 
 import (
 	"github.com/infrago/cache"
+	"github.com/infrago/infra"
 )
 
 func Driver() cache.Driver {
@@ -9,5 +10,5 @@ func Driver() cache.Driver {
 }
 
 func init() {
-	cache.Register("default", Driver())
+	infra.Register("default", Driver())
 }

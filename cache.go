@@ -20,11 +20,11 @@ var (
 type (
 	defaultDriver  struct{}
 	defaultConnect struct {
-		mutex   sync.RWMutex
-		name    string
-		config  cache.Config
-		setting defaultSetting
-		caches  sync.Map
+		mutex sync.RWMutex
+
+		instance *cache.Instance
+		setting  defaultSetting
+		caches   sync.Map
 	}
 	defaultSetting struct {
 	}
@@ -35,11 +35,11 @@ type (
 )
 
 // 连接
-func (driver *defaultDriver) Connect(name string, config cache.Config) (cache.Connect, error) {
+func (driver *defaultDriver) Connect(inst *cache.Instance) (cache.Connect, error) {
 	setting := defaultSetting{}
 
 	return &defaultConnect{
-		name: name, config: config, setting: setting,
+		instance: inst, setting: setting,
 		caches: sync.Map{},
 	}, nil
 }

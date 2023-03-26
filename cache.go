@@ -96,7 +96,7 @@ func (this *defaultConnect) Delete(key string) error {
 	return nil
 }
 
-func (this *defaultConnect) Serial(key string, start, step int64, expiry time.Duration) (int64, error) {
+func (this *defaultConnect) Sequence(key string, start, step int64, expiry time.Duration) (int64, error) {
 	value := start
 
 	if data, err := this.Read(key); err == nil {

@@ -30,7 +30,7 @@ type (
 	}
 	defaultValue struct {
 		Value  []byte
-		Expiry time.Time
+		Expire time.Time
 	}
 )
 
@@ -58,7 +58,7 @@ func (this *defaultConnect) Close() error {
 func (this *defaultConnect) Read(key string) ([]byte, error) {
 	if value, ok := this.caches.Load(key); ok {
 		if vv, ok := value.(defaultValue); ok {
-			if vv.Expiry.Unix() > time.Now().Unix() {
+			if vv.Expire.Unix() > time.Now().Unix() {
 				return vv.Value, nil
 			} else {
 				//过期了就删除
@@ -70,11 +70,11 @@ func (this *defaultConnect) Read(key string) ([]byte, error) {
 }
 
 // 更新缓存
-func (this *defaultConnect) Write(key string, data []byte, expiry time.Duration) error {
+func (this *defaultConnect) Write(key string, data []byte, expire time.Duration) error {
 	now := time.Now()
 
 	value := defaultValue{
-		Value: data, Expiry: now.Add(expiry),
+		Value: data, Expire: now.Add(expire),
 	}
 
 	this.caches.Store(key, value)
@@ -96,7 +96,7 @@ func (this *defaultConnect) Delete(key string) error {
 	return nil
 }
 
-func (this *defaultConnect) Sequence(key string, start, step int64, expiry time.Duration) (int64, error) {
+func (this *defaultConnect) Sequence(key string, start, step int64, expire time.Duration) (int64, error) {
 	value := start
 
 	if data, err := this.Read(key); err == nil {
@@ -110,7 +110,7 @@ func (this *defaultConnect) Sequence(key string, start, step int64, expiry time.
 
 	//写入值
 	data := []byte(fmt.Sprintf("%v", value))
-	err := this.Write(key, data, expiry)
+	err := this.Write(key, data, expire)
 	if err != nil {
 		return int64(0), err
 	}
